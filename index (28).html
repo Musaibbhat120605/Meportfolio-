@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Musaib Dispatch — Independent Developer, Jammu &amp; Kashmir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;0,900;1,500;1,600&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Georgia&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FFFFFF;
+    --ink:#0A0A0A;
+    --cobalt:#0033CC;
+    --hair:rgba(10,10,10,0.16);
+    --hair-strong:rgba(10,10,10,0.32);
+    --mono-meta:rgba(10,10,10,0.62);
+    --colw: calc((100% - 11 * 1px) / 12);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{background:var(--paper);}
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:Georgia, 'Times New Roman', serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  ::selection{background:var(--cobalt); color:var(--paper);}
+
+  a{color:inherit; text-decoration:none;}
+
+  .mono{font-family:'JetBrains Mono', monospace;}
+
+  .display{font-family:'Playfair Display', serif;}
+
+  /* ============ PAGE FRAME ============ */
+  .sheet{
+    position:relative;
+    max-width:1400px;
+    margin:0 auto;
+    padding:0 clamp(16px, 4vw, 44px);
+  }
+
+  .col-rules{
+    position:absolute;
+    inset:0;
+    display:grid;
+    grid-template-columns:repeat(12, 1fr);
+    pointer-events:none;
+    z-index:0;
+  }
+  .col-rules span{border-right:1px solid var(--hair);}
+  .col-rules span:last-child{border-right:none;}
+
+  .grid12{
+    position:relative;
+    z-index:1;
+    display:grid;
+    grid-template-columns:repeat(12, 1fr);
+    column-gap:0;
+  }
+  .grid12 > *{padding:0 18px;}
+
+  /* ============ MASTHEAD ============ */
+  .masthead{position:relative; z-index:1; padding-top:22px;}
+
+  .masthead-top{
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:end;
+    gap:14px;
+    padding-bottom:14px;
+  }
+
+  .edition-box{
+    border:1.5px solid var(--ink);
+    padding:8px 12px;
+    font-size:10.5px;
+    line-height:1.55;
+    letter-spacing:0.03em;
+  }
+  .edition-box.right{text-align:right;}
+  .edition-box .accent{color:var(--cobalt); font-weight:700;}
+
+  .nameplate{
+    text-align:center;
+  }
+  .nameplate .eyebrow{
+    font-size:11px;
+    letter-spacing:0.32em;
+    color:var(--mono-meta);
+    margin-bottom:6px;
+  }
+  .nameplate h1{
+    font-family:'Playfair Display', serif;
+    font-weight:900;
+    font-size:clamp(40px, 6.4vw, 92px);
+    line-height:0.92;
+    letter-spacing:-0.01em;
+    white-space:nowrap;
+    max-width:100%;
+  }
+  @media (max-width: 1500px){
+    .nameplate h1{
+      font-size:clamp(36px, 5.6vw, 78px);
+    }
+  }
+  .nameplate .tag{
+    margin-top:8px;
+    font-size:11.5px;
+    letter-spacing:0.08em;
+    color:var(--mono-meta);
+    text-transform:uppercase;
+  }
+
+  .rule-double{
+    border-top:3px solid var(--ink);
+    border-bottom:1px solid var(--ink);
+    height:5px;
+    margin-top:10px;
+  }
+
+  .navbar{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:0;
+    border-bottom:2px solid var(--ink);
+    padding:11px 0;
+  }
+  .navbar a{
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    font-weight:600;
+    padding:0 16px;
+    border-right:1px solid var(--hair-strong);
+    transition:color .15s;
+  }
+  .navbar a:last-child{border-right:none;}
+  .navbar a:hover{color:var(--cobalt);}
+
+  /* ============ FOLIO / PAGE LABEL ============ */
+  .folio{
+    position:relative; z-index:1;
+    display:flex;
+    justify-content:space-between;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--mono-meta);
+    border-top:1px solid var(--ink);
+    border-bottom:1px solid var(--hair);
+    padding:7px 0;
+    margin-top:34px;
+  }
+
+  /* ============ LEAD STORY ============ */
+  .lead-wrap{position:relative; z-index:1; padding:26px 0 10px;}
+  .lead-head{grid-column:1 / 9;}
+  .kicker{
+    font-size:12px;
+    letter-spacing:0.14em;
+    font-weight:700;
+    color:var(--cobalt);
+    text-transform:uppercase;
+    margin-bottom:10px;
+  }
+  .kicker::before{content:"■ "; }
+  .headline-xl{
+    font-family:'Playfair Display', serif;
+    font-weight:800;
+    font-size:clamp(34px, 4.6vw, 64px);
+    line-height:1.02;
+    letter-spacing:-0.01em;
+    margin-bottom:16px;
+  }
+  .dek{
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:19px;
+    line-height:1.42;
+    color:rgba(10,10,10,0.86);
+    margin-bottom:14px;
+    max-width:92%;
+  }
+  .byline{
+    font-size:11px;
+    letter-spacing:0.05em;
+    color:var(--mono-meta);
+    text-transform:uppercase;
+    border-top:1px solid var(--hair-strong);
+    border-bottom:1px solid var(--hair-strong);
+    padding:8px 0;
+    margin-bottom:22px;
+  }
+
+  .lead-body{
+    grid-column:1 / 9;
+    column-count:2;
+    column-gap:32px;
+    column-rule:1px solid var(--hair);
+    text-align:justify;
+    font-size:16.5px;
+    line-height:1.62;
+  }
+  .lead-body p{margin-bottom:14px;}
+  .lead-body p:first-of-type::first-letter{
+    font-family:'Playfair Display', serif;
+    font-weight:800;
+    font-size:74px;
+    line-height:0.78;
+    float:left;
+    padding:6px 10px 0 0;
+    color:var(--ink);
+  }
+  .jump-line{
+    font-size:11.5px;
+    font-style:italic;
+    color:var(--mono-meta);
+    margin-top:10px;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar{
+    grid-column:9 / 13;
+    border:2px solid var(--ink);
+    padding:0;
+    height:fit-content;
+    margin-top:2px;
+  }
+  .sidebar-head{
+    background:var(--ink);
+    color:var(--paper);
+    font-family:'JetBrains Mono', monospace;
+    font-size:11.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-weight:700;
+    padding:9px 14px;
+  }
+  .sidebar-body{padding:16px 16px 6px;}
+  .fact-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    font-size:12px;
+    padding:7px 0;
+    border-bottom:1px dashed var(--hair-strong);
+  }
+  .fact-row:last-child{border-bottom:none;}
+  .fact-row .k{
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.04em;
+    color:var(--mono-meta);
+    text-transform:uppercase;
+    font-size:10.5px;
+    white-space:nowrap;
+  }
+  .fact-row .v{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    text-align:right;
+    font-weight:600;
+  }
+
+  .wire-caption{
+    border-top:2px solid var(--ink);
+    margin-top:4px;
+  }
+  .wire-img{
+    height:120px;
+    background-image:
+      radial-gradient(rgba(10,10,10,0.9) 1px, transparent 1.3px);
+    background-size:6px 6px;
+    background-color:#f7f7f7;
+    filter:contrast(1.1);
+    position:relative;
+    overflow:hidden;
+  }
+  .wire-img::after{
+    content:"";
+    position:absolute; inset:0;
+    background:linear-gradient(115deg, transparent 40%, rgba(0,51,204,0.18) 55%, transparent 70%);
+  }
+  .wire-cap-text{
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    letter-spacing:0.03em;
+    line-height:1.5;
+    padding:9px 14px 14px;
+    color:var(--mono-meta);
+    border-top:1px solid var(--hair);
+  }
+
+  .stack-title{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-weight:700;
+    padding:14px 16px 6px;
+    border-top:1px solid var(--ink);
+  }
+  .stack-list{list-style:none; padding:0 16px 16px;}
+  .stack-list li{
+    display:flex;
+    gap:10px;
+    font-size:12.5px;
+    line-height:1.5;
+    padding:8px 0;
+    border-bottom:1px solid var(--hair);
+  }
+  .stack-list li:last-child{border-bottom:none;}
+  .stack-list .num{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    color:var(--cobalt);
+    font-size:12px;
+    min-width:16px;
+  }
+  .stack-list .t{font-weight:700; display:block;}
+  .stack-list .d{font-size:11.5px; color:rgba(10,10,10,0.72); font-family:Georgia, serif;}
+
+  /* ============ THREE COLUMN ROW ============ */
+  .triad{
+    position:relative; z-index:1;
+    margin-top:8px;
+    padding:26px 0;
+  }
+  .triad-head{
+    grid-column:1/13;
+    font-family:'Playfair Display', serif;
+    font-weight:800;
+    font-size:26px;
+    padding-bottom:14px;
+    border-bottom:2px solid var(--ink);
+    margin-bottom:22px;
+  }
+  .triad-head span{color:var(--cobalt);}
+
+  .tcol{
+    grid-column:span 4;
+    border-right:1px solid var(--hair-strong);
+    padding-right:18px !important;
+  }
+  .tcol:last-child{border-right:none;}
+  .tcol.offset{margin-top:38px;}
+
+  .tcol .tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.12em;
+    color:var(--cobalt);
+    font-weight:700;
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  .tcol h3{
+    font-family:'Playfair Display', serif;
+    font-size:23px;
+    font-weight:700;
+    line-height:1.12;
+    margin-bottom:10px;
+  }
+  .tcol p{
+    font-size:14px;
+    line-height:1.56;
+    text-align:justify;
+    margin-bottom:10px;
+  }
+  .tcol .meta{
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    color:var(--mono-meta);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+
+  /* ============ FEATURED BUILD ============ */
+  .feature-page{position:relative; z-index:1; padding:30px 0;}
+  .feature-head{grid-column:1/13; text-align:center; margin-bottom:24px;}
+  .feature-head .kicker{justify-content:center; display:flex; align-items:center; gap:6px;}
+  .feature-head h2{
+    font-family:'Playfair Display', serif;
+    font-weight:900;
+    font-size:clamp(32px, 5.4vw, 60px);
+    line-height:1.0;
+    margin:8px 0 14px;
+  }
+  .feature-head .dek{margin:0 auto 10px; text-align:center; max-width:70%;}
+
+  .feature-figure{
+    grid-column:1/13;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    border:2px solid var(--ink);
+    margin-bottom:30px;
+  }
+  .feature-figure .imgblock{
+    background-image: radial-gradient(rgba(255,255,255,0.9) 1px, transparent 1.4px), linear-gradient(135deg, #0A0A0A 0%, #0033CC 120%);
+    background-size:5px 5px, cover;
+    min-height:260px;
+    position:relative;
+  }
+  .feature-figure .imgblock::after{
+    content:"FIG. 1 — THE OVERLAY PILL";
+    position:absolute; bottom:10px; left:14px;
+    font-family:'JetBrains Mono', monospace;
+    color:#fff;
+    font-size:10px;
+    letter-spacing:0.1em;
+  }
+  .feature-figure .capside{
+    border-left:2px solid var(--ink);
+    padding:20px 22px;
+  }
+  .feature-figure .capside .mono{
+    font-size:11px; color:var(--mono-meta); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:10px; display:block;
+  }
+  .feature-figure .capside p{font-size:14.5px; line-height:1.6;}
+
+  .feature-body{grid-column:1/9; column-count:2; column-gap:30px; text-align:justify; font-size:16px; line-height:1.62;}
+  .feature-body p{margin-bottom:14px;}
+
+  .pullquote{
+    grid-column:9/13;
+    border-left:4px solid var(--cobalt);
+    padding:4px 0 4px 20px;
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:23px;
+    line-height:1.3;
+    color:var(--ink);
+    height:fit-content;
+  }
+  .pullquote .attr{
+    display:block;
+    font-family:'JetBrains Mono', monospace;
+    font-style:normal;
+    font-size:11px;
+    color:var(--mono-meta);
+    margin-top:12px;
+    text-transform:uppercase;
+  }
+
+  .spec-box{
+    grid-column:9/13;
+    margin-top:24px;
+    border:1.5px solid var(--ink);
+    height:fit-content;
+  }
+  .spec-box .h{
+    background:var(--ink); color:var(--paper);
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase;
+    padding:8px 12px;
+  }
+  .spec-row{display:flex; justify-content:space-between; font-size:11.5px; padding:7px 12px; border-bottom:1px dashed var(--hair-strong);}
+  .spec-row:last-child{border-bottom:none;}
+  .spec-row .k{font-family:'JetBrains Mono', monospace; color:var(--mono-meta); text-transform:uppercase; font-size:10px;}
+  .spec-row .v{font-family:'JetBrains Mono', monospace; font-weight:700;}
+
+  /* ============ TOOLBOX (classified grid) ============ */
+  .toolbox{position:relative; z-index:1; padding:30px 0;}
+  .tb-head{grid-column:1/13; border-top:2px solid var(--ink); border-bottom:2px solid var(--ink); padding:12px 0; margin-bottom:6px; display:flex; justify-content:space-between; align-items:baseline;}
+  .tb-head h2{font-family:'Playfair Display', serif; font-size:30px; font-weight:800;}
+  .tb-head .mono{font-size:10.5px; color:var(--mono-meta); text-transform:uppercase;}
+
+  .tb-cat{grid-column:span 3; border-right:1px solid var(--hair-strong); padding-top:16px !important; padding-bottom:16px !important;}
+  .tb-cat:nth-child(4n+1){grid-column:1/4;}
+  .tb-cat:last-child{border-right:none;}
+  .tb-cat .cat-title{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700; font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--cobalt);
+    margin-bottom:10px;
+    padding-bottom:6px;
+    border-bottom:1px solid var(--ink);
+  }
+  .ad{
+    font-size:11.5px;
+    line-height:1.5;
+    padding:9px 0;
+    border-bottom:1px dotted var(--hair-strong);
+  }
+  .ad:last-child{border-bottom:none;}
+  .ad .lead{font-family:'JetBrains Mono', monospace; font-weight:700; letter-spacing:0.02em;}
+  .ad .body{font-family:'JetBrains Mono', monospace; color:rgba(10,10,10,0.78); font-size:10.8px;}
+
+  /* ============ FIELD NOTES ============ */
+  .notes{position:relative; z-index:1; padding:30px 0 0;}
+  .notes-head{grid-column:1/13; margin-bottom:22px;}
+  .notes-head .kicker{margin-bottom:6px;}
+  .notes-head h2{font-family:'Playfair Display', serif; font-weight:800; font-size:clamp(30px,4.6vw,50px); line-height:1.05;}
+
+  .notes-col{grid-column:span 4; border-right:1px solid var(--hair-strong); font-size:14px; line-height:1.6; text-align:justify;}
+  .notes-col:last-child{border-right:none;}
+  .notes-col h4{font-family:'Playfair Display', serif; font-weight:700; font-size:19px; margin-bottom:9px;}
+  .notes-col p{margin-bottom:10px;}
+  .notes-col .n{
+    font-family:'JetBrains Mono', monospace;
+    font-size:26px; font-weight:700; color:var(--cobalt); display:block; margin-bottom:6px;
+  }
+
+  /* full-bleed accent block — the ONE signature moment */
+  .fullbleed{
+    position:relative;
+    z-index:1;
+    width:100vw;
+    margin-left:calc(50% - 50vw);
+    background:var(--cobalt);
+    color:var(--paper);
+    padding:min(9vw,110px) 24px;
+    text-align:center;
+    margin-top:34px;
+    margin-bottom:34px;
+  }
+  .fullbleed .mono{
+    font-size:11.5px; letter-spacing:0.24em; text-transform:uppercase; opacity:0.82; margin-bottom:18px; display:block;
+  }
+  .fullbleed h3{
+    font-family:'Playfair Display', serif;
+    font-weight:900;
+    font-style:italic;
+    font-size:clamp(30px, 6.6vw, 84px);
+    line-height:1.02;
+    max-width:1050px;
+    margin:0 auto;
+    letter-spacing:-0.01em;
+  }
+  .fullbleed .sub{
+    margin-top:22px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.06em;
+    opacity:0.86;
+  }
+
+  /* ============ LEDGER ============ */
+  .ledger{position:relative; z-index:1; padding:14px 0 30px;}
+  .ledger-head{grid-column:1/13; border-top:2px solid var(--ink); padding-top:14px; margin-bottom:18px; display:flex; justify-content:space-between; align-items:baseline;}
+  .ledger-head h2{font-family:'Playfair Display', serif; font-weight:800; font-size:30px;}
+  .ledger-head .mono{font-size:10.5px; color:var(--mono-meta); text-transform:uppercase;}
+
+  .ledger-table{grid-column:1/9;}
+  table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  thead th{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+    text-align:left;
+    border-top:2px solid var(--ink);
+    border-bottom:1.5px solid var(--ink);
+    padding:9px 8px;
+    color:var(--mono-meta);
+  }
+  tbody td{
+    padding:12px 8px;
+    border-bottom:1px solid var(--hair-strong);
+    vertical-align:top;
+  }
+  tbody tr:last-child td{border-bottom:2px solid var(--ink);}
+  td.name{font-family:'Playfair Display', serif; font-weight:700; font-size:16px;}
+  td.stack{font-family:'JetBrains Mono', monospace; font-size:11px; color:rgba(10,10,10,0.78);}
+  .status{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px; text-transform:uppercase; letter-spacing:0.05em;
+    padding:2px 7px;
+    border:1px solid var(--ink);
+    display:inline-block;
+  }
+  .status.live{background:var(--ink); color:var(--paper);}
+
+  .ledger-stats{grid-column:9/13; border:2px solid var(--ink); height:fit-content;}
+  .ledger-stats .h{background:var(--ink); color:var(--paper); font-family:'JetBrains Mono', monospace; font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; padding:9px 14px;}
+  .stat-row{padding:13px 14px; border-bottom:1px dashed var(--hair-strong);}
+  .stat-row:last-child{border-bottom:none;}
+  .stat-row .big{font-family:'Playfair Display', serif; font-weight:800; font-size:28px; color:var(--cobalt); line-height:1;}
+  .stat-row .lab{font-family:'JetBrains Mono', monospace; font-size:10px; text-transform:uppercase; color:var(--mono-meta); letter-spacing:0.05em; margin-top:4px;}
+
+  /* ============ CLASSIFIEDS / FOOTER ============ */
+  .classifieds{position:relative; z-index:1; padding:26px 0 8px; background:var(--paper);}
+  .cl-head{grid-column:1/13; text-align:center; border-top:3px solid var(--ink); border-bottom:1px solid var(--ink); padding:14px 0; margin-bottom:4px;}
+  .cl-head h2{font-family:'Playfair Display', serif; font-weight:900; font-size:clamp(28px,4.4vw,44px);}
+  .cl-head .mono{font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--mono-meta); margin-top:6px; display:block;}
+
+  .cl-col{grid-column:span 3; border-right:1px solid var(--hair-strong); padding-top:18px !important; padding-bottom:18px !important;}
+  .cl-col:last-child{border-right:none;}
+  .cl-col .h{
+    font-family:'JetBrains Mono', monospace; font-weight:700; font-size:10.5px;
+    text-transform:uppercase; letter-spacing:0.1em; color:var(--cobalt);
+    border-bottom:1px solid var(--ink); padding-bottom:7px; margin-bottom:10px;
+  }
+  .cl-entry{font-size:11px; line-height:1.55; padding:8px 0; border-bottom:1px dotted var(--hair-strong); font-family:'JetBrains Mono', monospace;}
+  .cl-entry:last-child{border-bottom:none;}
+  .cl-entry b{display:block; font-size:11.5px; letter-spacing:0.02em;}
+  .cl-entry a:hover{color:var(--cobalt);}
+  .cl-entry .desc{color:rgba(10,10,10,0.72); font-size:10.4px;}
+
+  .masthead-foot{
+    grid-column:1/13;
+    margin-top:26px;
+    border-top:3px double var(--ink);
+    padding-top:14px;
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    letter-spacing:0.04em;
+    color:var(--mono-meta);
+    text-transform:uppercase;
+    padding-bottom:30px;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:860px){
+    .nameplate h1{font-size:clamp(30px,10vw,54px); white-space:normal;}
+    .masthead-top{grid-template-columns:1fr; text-align:center;}
+    .edition-box.right{text-align:center;}
+    .navbar{gap:0; overflow-x:auto; justify-content:flex-start;}
+    .navbar a{padding:6px 12px;}
+    .lead-head, .lead-body, .sidebar{grid-column:1/13;}
+    .lead-body{column-count:1;}
+    .pullquote, .spec-box, .feature-body{grid-column:1/13;}
+    .feature-figure{grid-template-columns:1fr;}
+    .feature-figure .capside{border-left:none; border-top:2px solid var(--ink);}
+    .tcol{grid-column:1/13; border-right:none; border-bottom:1px solid var(--hair-strong); padding-bottom:20px !important;}
+    .tcol.offset{margin-top:0;}
+    .tb-cat, .notes-col, .cl-col{grid-column:1/13; border-right:none; border-bottom:1px solid var(--hair-strong);}
+    .ledger-table, .ledger-stats{grid-column:1/13;}
+    .col-rules{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <div class="col-rules" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- ============ MASTHEAD ============ -->
+  <header class="masthead" id="top">
+    <div class="masthead-top">
+      <div class="edition-box mono">
+        VOL. I — NO. 06<br>
+        PRICE: <span class="accent">FREE</span> — VIEW SOURCE ENCOURAGED<br>
+        WEATHER: CLEAR, BUILDING
+      </div>
+      <div class="nameplate">
+        <div class="eyebrow mono">SERVING JAMMU &amp; KASHMIR, ONE COMMIT AT A TIME</div>
+        <h1 class="display">THE MUSAIB DISPATCH</h1>
+        <div class="tag mono">Independent Developer · Android — Web — Interfaces · Est. in Code</div>
+      </div>
+      <div class="edition-box right mono">
+        DEVELOPER EDITION<br>
+        DATELINE: J&amp;K, INDIA<br>
+        CIRC: <span class="accent">SELF-DIRECTED</span>
+      </div>
+    </div>
+    <div class="rule-double"></div>
+    <nav class="navbar mono">
+      <a href="#front">Front Page</a>
+      <a href="#featured">Featured Build</a>
+      <a href="#toolbox">Toolbox</a>
+      <a href="#notes">Field Notes</a>
+      <a href="#ledger">Ledger</a>
+      <a href="#classifieds">Classifieds</a>
+    </nav>
+  </header>
+
+  <!-- ============ FRONT PAGE ============ -->
+  <section id="front">
+    <div class="folio mono"><span>Front Page — Section A</span><span>The Musaib Dispatch</span></div>
+
+    <div class="lead-wrap grid12">
+      <div class="lead-head">
+        <div class="kicker mono">Profile · Independent Development</div>
+        <h2 class="headline-xl display">A DEVELOPER BUILDS AN ENTIRE STUDIO OUT OF DISCIPLINE, NOT EQUIPMENT</h2>
+        <p class="dek">From Jammu &amp; Kashmir, a student and self-taught engineer treats every constraint as the brief, not the excuse — shipping Android apps, web platforms, and interface studies with the same handcrafted attention a print shop gives a front page.</p>
+        <div class="byline mono">By the Editorial Desk · Front Page, Col. 1–4 · Filed Today</div>
+      </div>
+
+      <div class="lead-body">
+        <p>Musaib works the way a small newsroom works: everything shipped, nothing outsourced. As a student and independent developer based in Jammu &amp; Kashmir, India, he moves across Android, the open web, and interactive interfaces with the same posture — a solo operator who plans, designs, writes, and ships every layer of a product himself, from the first sketch of an idea to the build that lands in someone's hand.</p>
+        <p>The stack is wide by necessity rather than trend: Kotlin for native Android work, C++ and C# where performance and structure matter, Python and JavaScript for logic and glue, HTML and CSS for the surfaces people actually touch. Firebase and Firestore carry the real-time data. Git and GitHub carry the history. Vercel and Render carry the deploys. APIs and PWAs carry the reach.</p>
+        <p>What holds it together isn't a framework — it's a sensibility. Musaib's work is handcrafted and cinematic before it is convenient: brutalist weight where the interface needs to feel solid, glassmorphic depth where it needs to feel alive, motion used as a material rather than a flourish. Gradients-as-decoration, neon defaults, and the flattened, template-shaped look of AI-generated design are treated as things to actively design away from, not aesthetics to fall back on.</p>
+        <p>Three build lines currently anchor the work: <b>Velune</b>, a Kotlin-built music platform with a floating, system-wide overlay player; <b>LearningOS</b>, a Firebase-powered platform connecting students and teachers in real time; and a pair of interface studies, <b>Nari</b> and <b>Nexora</b>, built to test restraint and motion as design problems in their own right, independent of any product need.</p>
+      </div>
+      <div class="jump-line mono" style="grid-column:1/9;">Continued on Page 2 — see "Inside Velune," Featured Build</div>
+
+      <aside class="sidebar">
+        <div class="sidebar-head">Today's Edition</div>
+        <div class="sidebar-body">
+          <div class="fact-row"><span class="k">Name</span><span class="v">Musaib</span></div>
+          <div class="fact-row"><span class="k">Based</span><span class="v">Jammu &amp; Kashmir, IN</span></div>
+          <div class="fact-row"><span class="k">Status</span><span class="v">Student</span></div>
+          <div class="fact-row"><span class="k">Role</span><span class="v">Indie Developer</span></div>
+          <div class="fact-row"><span class="k">Focus</span><span class="v">Android · Web · UI</span></div>
+          <div class="fact-row"><span class="k">Mode</span><span class="v">Solo, Shipped</span></div>
+        </div>
+        <div class="wire-caption">
+          <div class="wire-img"></div>
+          <div class="wire-cap-text">WIRE PHOTO — A BRUTALIST INTERFACE MID-BUILD, SHOT IN HARD SHADOW, COBALT UNDERLIGHT. CAPTION SUPPLIED BY THE DESK.</div>
+        </div>
+        <div class="stack-title">Dispatches — In Order Of Weight</div>
+        <ul class="stack-list">
+          <li><span class="num">01</span><span><span class="t">Velune</span><span class="d">Kotlin music platform, floating overlay player, brutalist system.</span></span></li>
+          <li><span class="num">02</span><span><span class="t">LearningOS</span><span class="d">Firebase platform linking students and teachers in real time.</span></span></li>
+          <li><span class="num">03</span><span><span class="t">Nari</span><span class="d">Interface study — restraint as a design constraint.</span></span></li>
+          <li><span class="num">04</span><span><span class="t">Nexora</span><span class="d">Interface study — motion treated as material.</span></span></li>
+        </ul>
+      </aside>
+    </div>
+
+    <div class="triad grid12">
+      <div class="triad-head">Three Builds, One <span>Desk</span></div>
+      <div class="tcol">
+        <div class="tag mono">Build 01 — Music</div>
+        <h3 class="display">Velune</h3>
+        <p>A Kotlin and Jetpack Compose music client with a system-wide floating overlay player — a Dynamic-Island-style pill that survives across every app. Glassmorphism was stripped out where it cost performance; brutalist hard-shadow boxes replaced it.</p>
+        <div class="meta">Android · Kotlin · Jetpack Compose</div>
+      </div>
+      <div class="tcol offset">
+        <div class="tag mono">Build 02 — Education</div>
+        <h3 class="display">LearningOS</h3>
+        <p>A Firebase-powered platform connecting students and teachers in real time — chat, real-time data, and a marketplace layer built on hardened Firestore rules. Designed to stay fast on low-powered devices, not just flagship ones.</p>
+        <div class="meta">Firebase · Firestore · JavaScript</div>
+      </div>
+      <div class="tcol">
+        <div class="tag mono">Build 03/04 — Studies</div>
+        <h3 class="display">Nari &amp; Nexora</h3>
+        <p>Two experimental interfaces built with no product brief — only a question. Nari tests how little an interface can say and still work. Nexora tests how much motion an interface can carry before it stops being usable.</p>
+        <div class="meta">HTML · CSS · JavaScript</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURED BUILD ============ -->
+  <section id="featured">
+    <div class="folio mono"><span>Featured Build — Section B</span><span>The Musaib Dispatch</span></div>
+    <div class="feature-page grid12">
+      <div class="feature-head">
+        <div class="kicker mono">Featured Build · Case File No. 01</div>
+        <h2 class="display">INSIDE VELUNE: A MUSIC PLAYER THAT REFUSES TO SIT STILL</h2>
+        <p class="dek">A floating overlay, a brutalist hand, and a Kotlin engine that never lets the music leave the screen.</p>
+      </div>
+
+      <div class="feature-figure">
+        <div class="imgblock"></div>
+        <div class="capside">
+          <span class="mono">Case File — Exhibit A</span>
+          <p>The overlay pill rendered system-wide, floating above every other app on the device. Cobalt underlight marks the active state; hard-edged geometry replaces the soft blur that used to sit behind it.</p>
+        </div>
+      </div>
+
+      <div class="feature-body">
+        <p>Velune began as a fork of a familiar idea — a music client — and became something closer to an operating layer. Its signature is a floating, system-wide overlay player that sits on top of whatever else is on screen: a pill that expands, contracts, and carries playback controls wherever the listener goes, styled after the Dynamic-Island pattern but built from the ground up in Kotlin and Jetpack Compose.</p>
+        <p>Early versions leaned on glassmorphism — frosted panels, soft blur, translucent depth. It looked good in a screenshot and cost real frames on real devices. Musaib made the call to flatten the engine rather than patch every call site: strip the blur logic out at the source, and let a brutalist system of hard shadows and flat cobalt-and-ink panels carry the same sense of depth without the performance tax.</p>
+        <p>The rest of the build follows the same instinct toward precision: a streak calendar with its day-of-week logic corrected, a settings surface routed to the right file instead of a placeholder, an autoblur default fixed at the source in the main activity, and full support for YouTube playlist links dropped straight into the link dialog. None of it is decorative work. All of it is the difference between an app that looks finished and one that is.</p>
+      </div>
+
+      <div class="pullquote display">
+        “Strip the blur from the engine, not from every screen that uses it — fix it once, at the root.”
+        <span class="attr">— Build Notes, Velune Development Log</span>
+      </div>
+
+      <div class="spec-box">
+        <div class="h">Case File — Specifications</div>
+        <div class="spec-row"><span class="k">Platform</span><span class="v">Android</span></div>
+        <div class="spec-row"><span class="k">Language</span><span class="v">Kotlin</span></div>
+        <div class="spec-row"><span class="k">UI Toolkit</span><span class="v">Jetpack Compose</span></div>
+        <div class="spec-row"><span class="k">Signature</span><span class="v">Overlay Player</span></div>
+        <div class="spec-row"><span class="k">Visual System</span><span class="v">Brutalist</span></div>
+        <div class="spec-row"><span class="k">Status</span><span class="v">Active Build</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TOOLBOX ============ -->
+  <section id="toolbox">
+    <div class="folio mono"><span>Toolbox — Section C</span><span>The Musaib Dispatch</span></div>
+    <div class="toolbox grid12">
+      <div class="tb-head">
+        <h2 class="display">Toolbox — Situations Filled</h2>
+        <span class="mono">Classified · Rate: Per Line · Runs Daily</span>
+      </div>
+
+      <div class="tb-cat">
+        <div class="cat-title">Languages</div>
+        <div class="ad"><span class="lead">KOTLIN.</span> <span class="body">Primary language for native Android work, UI through to background services. Daily use.</span></div>
+        <div class="ad"><span class="lead">C++.</span> <span class="body">Used where performance and manual control matter most.</span></div>
+        <div class="ad"><span class="lead">C#.</span> <span class="body">Structured application logic and tooling.</span></div>
+        <div class="ad"><span class="lead">PYTHON.</span> <span class="body">Scripting, backend logic, automation.</span></div>
+        <div class="ad"><span class="lead">JAVASCRIPT.</span> <span class="body">Interfaces, real-time apps, platform glue.</span></div>
+      </div>
+
+      <div class="tb-cat">
+        <div class="cat-title">Surfaces</div>
+        <div class="ad"><span class="lead">HTML / CSS.</span> <span class="body">Hand-set, not templated. Every surface built from the page up.</span></div>
+        <div class="ad"><span class="lead">PWAs.</span> <span class="body">Installable, offline-capable web builds.</span></div>
+        <div class="ad"><span class="lead">JETPACK COMPOSE.</span> <span class="body">Declarative Android UI, used across active builds.</span></div>
+        <div class="ad"><span class="lead">FRAGMENTS / XML.</span> <span class="body">Legacy-view Android work where required.</span></div>
+      </div>
+
+      <div class="tb-cat">
+        <div class="cat-title">Data &amp; Infra</div>
+        <div class="ad"><span class="lead">FIREBASE.</span> <span class="body">Auth, hosting, real-time app infrastructure.</span></div>
+        <div class="ad"><span class="lead">FIRESTORE.</span> <span class="body">Document data with hardened, production-grade security rules.</span></div>
+        <div class="ad"><span class="lead">APIs.</span> <span class="body">Designed, consumed, and reverse-engineered for legitimate integration.</span></div>
+        <div class="ad"><span class="lead">VERCEL.</span> <span class="body">Primary deploy target for web builds.</span></div>
+      </div>
+
+      <div class="tb-cat">
+        <div class="cat-title">Workflow</div>
+        <div class="ad"><span class="lead">GIT / GITHUB.</span> <span class="body">Full version control across every active project.</span></div>
+        <div class="ad"><span class="lead">RENDER.</span> <span class="body">Secondary hosting and backend deploys.</span></div>
+        <div class="ad"><span class="lead">SOLO SHIPPING.</span> <span class="body">Design, build, and deploy handled end to end, alone.</span></div>
+        <div class="ad"><span class="lead">AVAILABLE.</span> <span class="body">Open to collaboration — see Classifieds, back page.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FIELD NOTES ============ -->
+  <section id="notes">
+    <div class="folio mono"><span>Field Notes — Section D</span><span>The Musaib Dispatch</span></div>
+    <div class="notes grid12">
+      <div class="notes-head">
+        <div class="kicker mono">Field Notes · Editorial</div>
+        <h2 class="display">On Building Like It's Going to Print</h2>
+      </div>
+
+      <div class="notes-col">
+        <span class="n">I.</span>
+        <h4 class="display">Handcrafted, Not Generated</h4>
+        <p>Every layout starts from the content, not a component library. A page earns its structure — grids, rules, and type scale are chosen because the subject needs them, not because a template shipped with them.</p>
+        <p>That means slower work, on purpose. A premium interface reads as premium because someone made a hundred small decisions on purpose, not because a default made zero.</p>
+      </div>
+
+      <div class="notes-col">
+        <span class="n">II.</span>
+        <h4 class="display">Brutalist Where It Counts, Glass Where It Breathes</h4>
+        <p>Neither style is a rule. Brutalism carries weight — hard shadows, flat panels, real edges — where an interface needs to feel structural. Glass carries depth where a surface needs to feel alive, used only where it earns its performance cost.</p>
+        <p>The failure mode is using either as decoration. The goal is using each as an argument.</p>
+      </div>
+
+      <div class="notes-col">
+        <span class="n">III.</span>
+        <h4 class="display">Motion as Material, Typography as Voice</h4>
+        <p>Motion is treated the way a print designer treats ink — used where it changes meaning, withheld everywhere else. Typography carries the rest: a real display face at real scale says more than a hero image ever could.</p>
+        <p>Gradients-as-decoration, neon defaults, and template-shaped AI aesthetics are the three things actively designed against, every time.</p>
+      </div>
+    </div>
+
+    <div class="fullbleed">
+      <span class="mono">Editorial — Unsigned</span>
+      <h3 class="display">A gradient is not a decision. It is the absence of one.</h3>
+      <span class="sub">— filed under Field Notes, on defaults and their discontents</span>
+    </div>
+  </section>
+
+  <!-- ============ LEDGER ============ -->
+  <section id="ledger">
+    <div class="folio mono"><span>Ledger — Section E</span><span>The Musaib Dispatch</span></div>
+    <div class="ledger grid12">
+      <div class="ledger-head">
+        <h2 class="display">The Build Ledger</h2>
+        <span class="mono">Audited Today · Figures Self-Reported</span>
+      </div>
+
+      <div class="ledger-table">
+        <table>
+          <thead>
+            <tr><th>Build</th><th>Stack</th><th>Type</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="name">Velune</td>
+              <td class="stack">Kotlin, Jetpack Compose</td>
+              <td class="stack">Android — Music Platform</td>
+              <td><span class="status live">Active</span></td>
+            </tr>
+            <tr>
+              <td class="name">LearningOS</td>
+              <td class="stack">Firebase, Firestore, JavaScript</td>
+              <td class="stack">Web — Student / Teacher Platform</td>
+              <td><span class="status live">Active</span></td>
+            </tr>
+            <tr>
+              <td class="name">Nari</td>
+              <td class="stack">HTML, CSS, JavaScript</td>
+              <td class="stack">Interface Study</td>
+              <td><span class="status">Study</span></td>
+            </tr>
+            <tr>
+              <td class="name">Nexora</td>
+              <td class="stack">HTML, CSS, JavaScript</td>
+              <td class="stack">Interface Study</td>
+              <td><span class="status">Study</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ledger-stats">
+        <div class="h">By The Numbers</div>
+        <div class="stat-row"><div class="big">4</div><div class="lab">Active builds on record</div></div>
+        <div class="stat-row"><div class="big">2</div><div class="lab">Platforms — Android &amp; Web</div></div>
+        <div class="stat-row"><div class="big">1</div><div class="lab">Person on the masthead</div></div>
+        <div class="stat-row"><div class="big">0</div><div class="lab">Gradients used as decoration</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CLASSIFIEDS ============ -->
+  <section id="classifieds">
+    <div class="folio mono"><span>Classifieds — Back Page</span><span>The Musaib Dispatch</span></div>
+    <div class="classifieds grid12">
+      <div class="cl-head">
+        <h2 class="display">Classifieds &amp; Contact</h2>
+        <span class="mono">Placed by the developer himself — no agency, no markup</span>
+      </div>
+
+      <div class="cl-col">
+        <div class="h">Situations Wanted</div>
+        <div class="cl-entry">
+          <b>INDIE DEV, AVAILABLE.</b>
+          <span class="desc">Independent developer, student, Jammu &amp; Kashmir. Open to collaboration on Android, web, and interface projects. Serious inquiries only.</span>
+        </div>
+        <div class="cl-entry">
+          <b>SOLO SHOP, FULL STACK.</b>
+          <span class="desc">Handles design, build, and deploy alone — from first sketch to shipped product.</span>
+        </div>
+      </div>
+
+      <div class="cl-col">
+        <div class="h">Code &amp; Repositories</div>
+        <div class="cl-entry">
+          <b><a href="https://github.com/musaibbhat120604" target="_blank" rel="noopener">GITHUB (PRIMARY)</a></b>
+          <span class="desc">github.com/musaibbhat120604 — active repos, builds, and history.</span>
+        </div>
+        <div class="cl-entry">
+          <b><a href="https://github.com/musaibbhat120605" target="_blank" rel="noopener">GITHUB (ALT)</a></b>
+          <span class="desc">github.com/musaibbhat120605</span>
+        </div>
+      </div>
+
+      <div class="cl-col">
+        <div class="h">Direct Line</div>
+        <div class="cl-entry">
+          <b><a href="https://t.me/iampenguin914" target="_blank" rel="noopener">TELEGRAM</a></b>
+          <span class="desc">@iampenguin914 — fastest way to reach the desk.</span>
+        </div>
+        <div class="cl-entry">
+          <b><a href="https://instagram.com/bytezen14" target="_blank" rel="noopener">INSTAGRAM</a></b>
+          <span class="desc">@bytezen14 — process notes and builds in progress.</span>
+        </div>
+      </div>
+
+      <div class="cl-col">
+        <div class="h">Notices</div>
+        <div class="cl-entry">
+          <b>NOW HIRING (SELF).</b>
+          <span class="desc">Accepting new project inquiries. Android, web, or interface work considered.</span>
+        </div>
+        <div class="cl-entry">
+          <b>LOST &amp; FOUND.</b>
+          <span class="desc">Found: one working theory that gradients are not a design decision. Owner may claim above, Field Notes.</span>
+        </div>
+      </div>
+
+      <div class="masthead-foot">
+        <span>The Musaib Dispatch — Typeset in Playfair Display &amp; JetBrains Mono</span>
+        <span>Printed on White Stock, No. 0A0A0A Ink</span>
+        <span>No Template Was Used in the Making of This Page</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+</body>
+</html>
